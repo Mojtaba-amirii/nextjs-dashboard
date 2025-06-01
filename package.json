@@ -22,15 +22,15 @@
     "tailwindcss": "4.1.8",
     "typescript": "5.8.3",
     "use-debounce": "^10.0.4",
-    "zod": "^3.25.42"
+    "zod": "^3.25.46"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@types/bcrypt": "^5.0.2",
-    "@types/node": "22.15.24",
+    "@types/node": "22.15.29",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
-    "eslint": "^9.27.0",
-    "eslint-config-next": "15.3.2"
+    "eslint": "^9.28.0",
+    "eslint-config-next": "15.3.3"
   }
 }
