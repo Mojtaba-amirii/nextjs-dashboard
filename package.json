@@ -22,7 +22,7 @@
     "tailwindcss": "4.1.8",
     "typescript": "5.8.3",
     "use-debounce": "^10.0.4",
-    "zod": "^3.25.46"
+    "zod": "^3.25.48"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
