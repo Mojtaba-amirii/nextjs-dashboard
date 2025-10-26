@@ -19,10 +19,13 @@ export default async function Page(props: {
     page?: string;
   }>;
 }) {
+  // await only for search params (small sync-like promise). Do NOT await
+  // database or network IO at the top-level when `cacheComponents` is enabled
+  // — move that IO into a nested async component that is wrapped by
+  // <Suspense> so Next can provide a fallback while the runtime fetches data.
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchInvoicesPages(query);
 
   return (
     <div className="w-full">
@@ -33,12 +36,34 @@ export default async function Page(props: {
         <Search placeholder="Search invoices..." />
         <CreateInvoice />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
+
+      {/* Outer suspense covers the content that performs uncached IO at runtime */}
+      <Suspense fallback={<InvoicesTableSkeleton />}>
+        {/* InvoicesContent is an async server component that does the runtime IO */}
+        <InvoicesContent query={query} currentPage={currentPage} />
       </Suspense>
+    </div>
+  );
+}
+
+async function InvoicesContent({
+  query,
+  currentPage,
+}: {
+  query: string;
+  currentPage: number;
+}) {
+  // This IO happens inside the Suspense boundary so it's compatible with
+  // cacheComponents: true (PPR). If you want this data cached for prerendering
+  // later, add `"use cache"` and cacheTag/cacheLife in the data layer.
+  const totalPages = await fetchInvoicesPages(query);
+
+  return (
+    <>
+      <Table query={query} currentPage={currentPage} />
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>
-    </div>
+    </>
   );
 }

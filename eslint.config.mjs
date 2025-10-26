@@ -1,19 +1,17 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig } from "eslint/config";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 
-const compat = new FlatCompat({
-  // import.meta.dirname is available after Node.js v20.11.0
-  baseDirectory: import.meta.dirname,
-});
-
-const eslintConfig = [...compat.extends("next/core-web-vitals", "next/typescript"), {
-  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
-}, ...compat.config({
-  extends: ["next"],
-  rules: {
-    "react/no-unescaped-entities": "off",
-    "@next/next/no-page-custom-font": "off",
-    "no-unused-vars": "off",
+// Use Next.js' core-web-vitals flat config then apply project overrides.
+// Avoid using FlatCompat or any compat helpers — they create circular
+// structures when combined with next's flat exports.
+export default defineConfig([
+  ...nextCoreWebVitals,
+  {
+    ignores: [".next/**", "out/**", "build/**", "next-env.d.ts"],
+    rules: {
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-page-custom-font": "off",
+      "no-unused-vars": "off",
+    },
   },
-})];
-
-export default eslintConfig;
+]);
